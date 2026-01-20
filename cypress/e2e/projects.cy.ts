@@ -6,6 +6,8 @@ describe('Projects', () => {
   };
 
   before(() => {
+    cy.intercept('POST', '**/graphql').as('registerRequest');
+
     // Register a test user once for all project tests
     cy.visit('/register');
     cy.get('input#name').type(testUser.name);
@@ -13,6 +15,8 @@ describe('Projects', () => {
     cy.get('input#password').type(testUser.password);
     cy.get('input#confirmPassword').type(testUser.password);
     cy.get('button[type="submit"]').click();
+
+    cy.wait('@registerRequest');
     cy.url().should('include', '/dashboard');
   });
 

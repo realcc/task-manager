@@ -24,12 +24,18 @@ Cypress.Commands.add('login', (email: string, password: string) => {
 });
 
 Cypress.Commands.add('register', (name: string, email: string, password: string) => {
+  cy.intercept('POST', '**/graphql').as('registerRequest');
+
   cy.visit('/register');
   cy.get('input#name').type(name);
   cy.get('input#email').type(email);
   cy.get('input#password').type(password);
   cy.get('input#confirmPassword').type(password);
   cy.get('button[type="submit"]').click();
+
+  // Wait for the GraphQL mutation to complete
+  cy.wait('@registerRequest');
+
   cy.url().should('include', '/dashboard');
 });
 
