@@ -17,6 +17,7 @@ describe('Dashboard', () => {
     cy.get('button[type="submit"]').click();
 
     cy.wait('@registerRequest');
+    cy.contains('Dashboard', { timeout: 15000 }).should('be.visible');
     cy.url().should('include', '/dashboard');
   });
 

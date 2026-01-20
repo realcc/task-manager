@@ -16,11 +16,13 @@ interface TaskInput {
 }
 
 Cypress.Commands.add('login', (email: string, password: string) => {
+  cy.intercept('POST', '**/graphql').as('loginRequest');
   cy.visit('/login');
   cy.get('input#email').type(email);
   cy.get('input#password').type(password);
   cy.get('button[type="submit"]').click();
-  cy.url().should('include', '/dashboard');
+  cy.wait('@loginRequest');
+  cy.contains('Dashboard', { timeout: 15000 }).should('be.visible');
 });
 
 Cypress.Commands.add('register', (name: string, email: string, password: string) => {
@@ -36,6 +38,7 @@ Cypress.Commands.add('register', (name: string, email: string, password: string)
   // Wait for the GraphQL mutation to complete
   cy.wait('@registerRequest');
 
+  cy.contains('Dashboard', { timeout: 15000 }).should('be.visible');
   cy.url().should('include', '/dashboard');
 });
 
