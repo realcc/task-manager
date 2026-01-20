@@ -6,6 +6,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { TasksModule } from './modules/tasks/tasks.module';
 import { ProjectsModule } from './modules/projects/projects.module';
+import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [
@@ -17,5 +18,6 @@ import { ProjectsModule } from './modules/projects/projects.module';
     ProjectsModule,
     GraphqlModule,
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}
