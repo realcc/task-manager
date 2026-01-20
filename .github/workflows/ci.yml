@@ -168,20 +168,28 @@ jobs:
         run: pnpm build
 
       - name: Start API
-        run: pnpm --filter @task-manager/api start &
+        run: |
+          pnpm --filter @task-manager/api start > api.log 2>&1 &
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/taskmanager
           JWT_SECRET: test-secret-key
           PORT: 4000
 
       - name: Start Web
-        run: pnpm --filter @task-manager/web start &
+        run: |
+          pnpm --filter @task-manager/web start > web.log 2>&1 &
         env:
           NEXT_PUBLIC_API_URL: http://localhost:4000/graphql
 
       - name: Wait for servers
         run: |
-          npx wait-on http://localhost:4000/health http://localhost:3000 --timeout 60000
+          npx wait-on http://localhost:4000/health http://localhost:3000 --timeout 60000 || {
+            echo "=== API Server Log ==="
+            cat api.log || echo "No API log found"
+            echo "=== Web Server Log ==="
+            cat web.log || echo "No Web log found"
+            exit 1
+          }
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
