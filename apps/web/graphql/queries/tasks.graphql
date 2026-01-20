@@ -1,0 +1,29 @@
+query GetTasks($status: TaskStatus, $cursor: String, $take: Int) {
+  tasks(status: $status, cursor: $cursor, take: $take) {
+    items {
+      id
+      title
+      description
+      status
+      priority
+      dueDate
+      createdAt
+    }
+    nextCursor
+    hasMore
+  }
+}
+
+query GetTask($id: ID!) {
+  task(id: $id) {
+    id
+    title
+    description
+    status
+    priority
+    dueDate
+    projectId
+    createdAt
+    updatedAt
+  }
+}

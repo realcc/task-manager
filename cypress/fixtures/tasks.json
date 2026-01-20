@@ -1,0 +1,28 @@
+{
+  "sampleTask": {
+    "title": "Test Task",
+    "description": "This is a test task description",
+    "priority": "HIGH",
+    "status": "TODO"
+  },
+  "tasks": [
+    {
+      "title": "First Task",
+      "description": "First task description",
+      "priority": "HIGH",
+      "status": "TODO"
+    },
+    {
+      "title": "Second Task",
+      "description": "Second task description",
+      "priority": "MEDIUM",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "title": "Third Task",
+      "description": "Third task description",
+      "priority": "LOW",
+      "status": "DONE"
+    }
+  ]
+}

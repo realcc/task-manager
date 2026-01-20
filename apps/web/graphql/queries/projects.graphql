@@ -1,0 +1,22 @@
+query GetProjects {
+  projects {
+    id
+    name
+    description
+    color
+    taskCount
+    createdAt
+  }
+}
+
+query GetProject($id: ID!) {
+  project(id: $id) {
+    id
+    name
+    description
+    color
+    taskCount
+    createdAt
+    updatedAt
+  }
+}

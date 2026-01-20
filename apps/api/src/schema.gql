@@ -1,0 +1,145 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AuthPayload {
+  accessToken: String!
+  refreshToken: String!
+  user: UserType!
+}
+
+input ChangePasswordInput {
+  currentPassword: String!
+  newPassword: String!
+}
+
+input CreateProjectInput {
+  description: String
+  name: String!
+}
+
+input CreateTaskInput {
+  description: String
+  dueDate: DateTime
+  priority: TaskPriority
+  projectId: String
+  status: TaskStatus
+  title: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  changePassword(input: ChangePasswordInput!): User!
+  createProject(input: CreateProjectInput!): Project!
+  createTask(input: CreateTaskInput!): Task!
+  deleteProject(id: String!): Project!
+  deleteTask(id: String!): Task!
+  login(input: LoginInput!): AuthPayload!
+  logout: Boolean!
+  refreshToken(token: String!): AuthPayload!
+  register(input: RegisterInput!): AuthPayload!
+  updateProfile(input: UpdateUserInput!): User!
+  updateProject(input: UpdateProjectInput!): Project!
+  updateTask(input: UpdateTaskInput!): Task!
+}
+
+type PaginatedTasks {
+  hasMore: Boolean!
+  items: [Task!]!
+  nextCursor: String
+}
+
+type Project {
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  name: String!
+  taskCount: Int!
+  tasks: [Task!]
+  updatedAt: DateTime!
+}
+
+type Query {
+  health: String!
+  me: UserType!
+  profile: User!
+  project(id: String!): Project!
+  projects: [Project!]!
+  task(id: String!): Task!
+  tasks(cursor: String, priority: TaskPriority, projectId: String, sortBy: String = "createdAt", sortOrder: String = "desc", status: TaskStatus, take: Int = 20): PaginatedTasks!
+}
+
+input RegisterInput {
+  email: String!
+  name: String!
+  password: String!
+}
+
+type Task {
+  createdAt: DateTime!
+  description: String
+  dueDate: DateTime
+  id: ID!
+  priority: TaskPriority!
+  projectId: String
+  status: TaskStatus!
+  title: String!
+  updatedAt: DateTime!
+}
+
+enum TaskPriority {
+  HIGH
+  LOW
+  MEDIUM
+}
+
+enum TaskStatus {
+  DONE
+  IN_PROGRESS
+  TODO
+}
+
+input UpdateProjectInput {
+  description: String
+  id: String!
+  name: String
+}
+
+input UpdateTaskInput {
+  description: String
+  dueDate: DateTime
+  id: String!
+  priority: TaskPriority
+  projectId: String
+  status: TaskStatus
+  title: String
+}
+
+input UpdateUserInput {
+  name: String
+}
+
+type User {
+  createdAt: DateTime!
+  email: String!
+  id: ID!
+  name: String!
+  updatedAt: DateTime!
+}
+
+type UserType {
+  createdAt: DateTime!
+  email: String!
+  id: ID!
+  name: String!
+  updatedAt: DateTime!
+}
