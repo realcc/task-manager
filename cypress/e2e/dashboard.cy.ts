@@ -6,19 +6,7 @@ describe('Dashboard', () => {
   };
 
   before(() => {
-    cy.intercept('POST', '**/graphql').as('registerRequest');
-
-    // Register a test user once for all dashboard tests
-    cy.visit('/register');
-    cy.get('input#name').type(testUser.name);
-    cy.get('input#email').type(testUser.email);
-    cy.get('input#password').type(testUser.password);
-    cy.get('input#confirmPassword').type(testUser.password);
-    cy.get('button[type="submit"]').click();
-
-    cy.wait('@registerRequest');
-    cy.contains('Dashboard', { timeout: 15000 }).should('be.visible');
-    cy.url().should('include', '/dashboard');
+    cy.register(testUser.name, testUser.email, testUser.password);
   });
 
   beforeEach(() => {

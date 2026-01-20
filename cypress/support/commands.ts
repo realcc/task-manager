@@ -18,10 +18,22 @@ interface TaskInput {
 Cypress.Commands.add('login', (email: string, password: string) => {
   cy.intercept('POST', '**/graphql').as('loginRequest');
   cy.visit('/login');
+  cy.get('input#email').should('be.visible');
   cy.get('input#email').type(email);
   cy.get('input#password').type(password);
   cy.get('button[type="submit"]').click();
-  cy.wait('@loginRequest');
+
+  // Wait for GraphQL and validate response
+  cy.wait('@loginRequest').then((interception) => {
+    const res = interception.response?.body;
+    if (res?.errors?.length > 0) {
+      throw new Error(`Login failed: ${res.errors.map((e: any) => e.message).join(', ')}`);
+    }
+  });
+
+  // Wait for navigation and content
+  cy.url().should('include', '/dashboard', { timeout: 15000 });
+  cy.get('.animate-pulse', { timeout: 15000 }).should('not.exist');
   cy.contains('Dashboard', { timeout: 15000 }).should('be.visible');
 });
 
@@ -29,17 +41,28 @@ Cypress.Commands.add('register', (name: string, email: string, password: string)
   cy.intercept('POST', '**/graphql').as('registerRequest');
 
   cy.visit('/register');
+  cy.get('input#name').should('be.visible');
   cy.get('input#name').type(name);
   cy.get('input#email').type(email);
   cy.get('input#password').type(password);
   cy.get('input#confirmPassword').type(password);
   cy.get('button[type="submit"]').click();
 
-  // Wait for the GraphQL mutation to complete
-  cy.wait('@registerRequest');
+  // Wait for GraphQL and validate response
+  cy.wait('@registerRequest').then((interception) => {
+    const res = interception.response?.body;
+    if (res?.errors?.length > 0) {
+      throw new Error(`Registration failed: ${res.errors.map((e: any) => e.message).join(', ')}`);
+    }
+    expect(res?.data?.register?.accessToken).to.exist;
+  });
 
+  // Wait for navigation to complete
+  cy.url().should('include', '/dashboard', { timeout: 15000 });
+
+  // Wait for loading states to clear and content to render
+  cy.get('.animate-pulse', { timeout: 15000 }).should('not.exist');
   cy.contains('Dashboard', { timeout: 15000 }).should('be.visible');
-  cy.url().should('include', '/dashboard');
 });
 
 Cypress.Commands.add('logout', () => {
